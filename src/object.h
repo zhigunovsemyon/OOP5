@@ -20,12 +20,20 @@ public:
 
 	int id() const {return id_;}
 
+	virtual Object const & print (std::ostream & ost) const = 0;
+
+	friend std::ostream & operator<<(std::ostream &ost, Object const &obj)
+	{
+		obj.print(ost);
+		return ost;
+	}
+
 	
 protected:
 	Object() : id_{count_++} {}
 
 
 private:
-	static int count_;
+	static inline int count_;
 	int id_; // Идентификатор класса
 };
