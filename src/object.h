@@ -1,11 +1,12 @@
 #include <istream>
 #include <ostream>
+#include <string_view>
 
 /* Предусмотреть:
  * 	+1.Загрузку объекта из текстовой строки.
  * 	+2.Выгрузки объекта в текстовую строку в динамической памяти.
  * 	+3.Возврат уникального идентификатора класса.
- * 	4.Возврат указателя на строку с именем класса.
+ * 	+4.Возврат указателя на строку с именем класса.
  * 	5.Сравнение двух объектов.
  * 	6."Сложение" (Объединение) двух объектов.
  * 	7.Создание динамической копии объекта.
@@ -20,6 +21,8 @@ public:
 	virtual ~Object() = default;
 
 	int id() const { return id_; }
+
+	virtual std::string_view type() = 0;
 
 	virtual Object const & print(std::ostream & ost) const = 0;
 	virtual Object & read(std::istream & ist) = 0;
