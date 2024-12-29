@@ -22,7 +22,7 @@ public:
 
 	int id() const { return id_; }
 
-	virtual std::string_view type() = 0;
+	virtual std::string_view type() const = 0;
 
 	virtual Object const & print(std::ostream & ost) const = 0;
 	virtual Object & read(std::istream & ist) = 0;
@@ -44,5 +44,5 @@ protected:
 
 private:
 	static inline int count_;
-	int id_; // Идентификатор класса
+	int const id_; // Идентификатор класса
 };

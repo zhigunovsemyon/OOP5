@@ -18,7 +18,7 @@ public:
 		return *this;
 	}
 
-	std::string_view type() override { return "Double"; }
+	std::string_view type() const override { return "Double"; }
 
 private:
 	double n_;
@@ -40,7 +40,7 @@ public:
 		return *this;
 	}
 
-	std::string_view type() override { return "Int"; }
+	std::string_view type() const override { return "Int"; }
 
 private:
 	int n_;
