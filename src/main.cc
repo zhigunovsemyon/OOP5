@@ -2,31 +2,14 @@
 #include <iostream>
 #include <string_view>
 
-class Double : public Object {
-public:
-	Double(double n = 0) : n_{n} {}
-
-	Double const & print(std::ostream & ost = std::cout) const override
-	{
-		ost << n_;
-		return *this;
-	}
-
-	Double & read(std::istream & ist = std::cin) override
-	{
-		ist >> n_;
-		return *this;
-	}
-
-	std::string_view type() const override { return "Double"; }
-
-private:
-	double n_;
-};
 
 class Int : public Object {
 public:
-	Int(int n = 0) : n_{n} {}
+	~Int() override { delete &n_; }
+
+	Int(Int const &i) : n_{*new int{i.n_}} {}
+
+	Int(int n = 0) : n_{*new int{n}} {}
 
 	Int const & print(std::ostream & ost = std::cout) const override
 	{
@@ -43,17 +26,17 @@ public:
 	std::string_view type() const override { return "Int"; }
 
 private:
-	int n_;
+	int & n_;
 };
 
 int main()
 {
 	Int i1;
-	Double i2;
 	std::cin >> i1;
-	i2.read();
+	Object * i3 = new Int{i1};
 
 	std::cout << i1 << ' ' << i1.id() << ' ' << i1.type() << '\n';
-	std::cout << i2 << ' ' << i2.id() << ' ' << i2.type() << '\n';
+	std::cout << *i3 << ' ' << i3->id() << ' ' << i3->type() << '\n';
+	delete i3;
 	return 0;
 }
