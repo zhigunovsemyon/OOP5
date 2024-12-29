@@ -5,28 +5,28 @@
 
 class Int : public Object {
 public:
-	~Int() override { delete &n_; }
+	~Int() override { delete n_; }
 
-	Int(Int const &i) : n_{*new int{i.n_}} {}
+	Int(Int const &i) : n_{new int{*i.n_}} {}
 
-	Int(int n = 0) : n_{*new int{n}} {}
+	Int(int n = 0) : n_{new int{n}} {}
 
 	Int const & print(std::ostream & ost = std::cout) const override
 	{
-		ost << n_;
+		ost << *n_;
 		return *this;
 	}
 
 	Int & read(std::istream & ist = std::cin) override
 	{
-		ist >> n_;
+		ist >> *n_;
 		return *this;
 	}
 
 	std::string_view type() const override { return "Int"; }
 
 private:
-	int & n_;
+	int * n_;
 };
 
 int main()
