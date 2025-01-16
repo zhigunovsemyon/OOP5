@@ -40,6 +40,21 @@ public:
 	/*Сравнение на равенство с другим объектом*/
 	virtual bool equal(Object const &) const = 0;
 
+	/*Добавление в текущий объект другого*/
+	virtual Object & add(Object const &) = 0;
+
+	/*Добавление в первый объект второго*/
+	friend Object & operator+=(Object & a, Object const & b)
+	{
+		return a.add(b);
+	}
+
+	/*Сложение двух объектов в новый третий*/
+	// friend Object  operator+(Object a, Object const & b)
+	// {
+	//
+	// }
+
 	/*Сравнение на неравенство с другим объектом*/
 	friend bool operator!=(Object const & a, Object const & b)
 	{
