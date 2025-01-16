@@ -18,6 +18,9 @@
  */
 class Object {
 public:
+	enum class exceptions {
+		NOT_MATCHING_DERIVED
+	};
 	virtual ~Object() = default;
 
 	int id() const { return id_; }
@@ -26,6 +29,18 @@ public:
 
 	virtual Object const & print(std::ostream & ost) const = 0;
 	virtual Object & read(std::istream & ist) = 0;
+
+	virtual bool equal(Object const &) const = 0;
+
+	friend bool operator!=(Object const & a, Object const & b)
+	{
+		return !a.equal(b);
+	}
+
+	friend bool operator==(Object const & a, Object const & b)
+	{
+		return a.equal(b);
+	}
 
 	friend std::istream & operator>>(std::istream & ist, Object & obj)
 	{
@@ -47,19 +62,3 @@ private:
 	int const id_; // Идентификатор класса
 };
 
-/*
-class cObject : public Object {
-public:
-	virtual bool equal(cObject const & o) const = 0;
-
-	friend bool operator==(cObject const & o1, cObject const & o2)
-	{
-		return o1.equal(o2);
-	}
-
-	friend bool operator!=(cObject const & o1, cObject const & o2)
-	{
-		return !(o1.equal(o2));
-	}
-}; 
-*/
