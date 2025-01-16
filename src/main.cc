@@ -24,6 +24,16 @@ public:
 		return *this;
 	}
 
+	selfType & add(Object const & other) override
+	{
+		auto cmp{dynamic_cast<selfType const *>(&other)};
+		if (nullptr == cmp)
+			throw Object::exceptions::NOT_MATCHING_DERIVED;
+
+		*n_ += *(cmp->n_);
+		return *this;
+	}
+
 	selfType & read(std::istream & ist = std::cin) override
 	{
 		ist >> *n_;
@@ -47,7 +57,7 @@ public:
 		if (nullptr == cmp)
 			throw Object::exceptions::NOT_MATCHING_DERIVED;
 
-		auto diff {*n_ - *cmp->n_};
+		auto diff{*n_ - *cmp->n_};
 		return (diff > 0) ? 1 : (diff < 0) ? -1 : 0;
 	}
 
@@ -102,6 +112,16 @@ public:
 			throw Object::exceptions::NOT_MATCHING_DERIVED;
 
 		return *n_ == *(cmp->n_);
+	}
+
+	selfType & add(Object const & other) override
+	{
+		auto cmp{dynamic_cast<selfType const *>(&other)};
+		if (nullptr == cmp)
+			throw Object::exceptions::NOT_MATCHING_DERIVED;
+
+		*n_ += *(cmp->n_);
+		return *this;
 	}
 
 private:
@@ -163,6 +183,12 @@ int main()
 		std::cout << "a != b : " << (*a != *b) << '\n';
 		std::cout << "a >= b : " << (*a >= *b) << '\n';
 		std::cout << "a <= b : " << (*a <= *b) << '\n';
+
+		std::cout << "\na+=b\n";
+		*a += *b;
+		std::cout << "a: " << "id = " << a->id() //
+			  << ", type: " << a->type()	 //
+			  << ", value: " << *a << '\n';
 		delete a;
 		delete b;
 		return 0;
