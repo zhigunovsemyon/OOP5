@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string_view>
 
-class Double : public Object {
+class Double : public CObject {
 public:
 #define selfType Double
 
@@ -41,12 +41,22 @@ public:
 		return *n_ == *(cmp->n_);
 	}
 
+	int compare(CObject const & other) const noexcept(false) override
+	{
+		auto cmp{dynamic_cast<selfType const *>(&other)};
+		if (nullptr == cmp)
+			throw Object::exceptions::NOT_MATCHING_DERIVED;
+
+		auto diff {*n_ - *cmp->n_};
+		return (diff > 0) ? 1 : (diff < 0) ? -1 : 0;
+	}
+
 private:
 	double * n_;
 #undef selfType
 };
 
-class Int : public Object {
+class Int : public CObject {
 public:
 #define selfType Int
 
@@ -74,6 +84,15 @@ public:
 		return *this;
 	}
 
+	int compare(CObject const & other) const noexcept(false) override
+	{
+		auto cmp{dynamic_cast<selfType const *>(&other)};
+		if (nullptr == cmp)
+			throw Object::exceptions::NOT_MATCHING_DERIVED;
+
+		return static_cast<int>(*n_ - *cmp->n_);
+	}
+
 	std::string_view type() const override { return "Int"; }
 
 	bool equal(Object const & i) const noexcept(false) override
@@ -92,26 +111,68 @@ private:
 
 int main()
 {
-	Int i1;
-	Double i2{10};
-	std::cin >> i1;
-	Object * i3{new Int{i1}};
+	CObject *a{}, *b{};
 
-	std::cout << i1 << ' ' << i1.id() << ' ' << i1.type() << '\n';
-	std::cout << i2 << ' ' << i2.id() << ' ' << i2.type() << '\n';
-	std::cout << *i3 << ' ' << i3->id() << ' ' << i3->type() << '\n';
+	std::cout << "Тип a -- Int или Double (i|d)? ";
+	switch (getchar()) {
+	case 'D':
+	case 'd':
+		a = new Double();
+		break;
+	case 'I':
+	case 'i':
+		a = new Int();
+		break;
+	default:
+		std::cerr << "Неправильный ввод!\n";
+		return 0;
+	}
+	std::cout << "Значение a: ";
+	std::cin >> *a;
+
+	std::cout << "Тип b -- Int или Double (i|d)? ";
+	while (getchar() != '\n')
+		;
+	switch (getchar()) {
+	case 'D':
+	case 'd':
+		b = new Double();
+		break;
+	case 'I':
+	case 'i':
+		b = new Int();
+		break;
+	default:
+		std::cerr << "Неправильный ввод!\n";
+		delete a;
+		return 0;
+	}
+	std::cout << "Значение b: ";
+	std::cin >> *b;
+
+	std::cout << "a: " << "id = " << a->id() //
+		  << ", type: " << a->type()	 //
+		  << ", value: " << *a << '\n';
+
+	std::cout << "b: " << "id = " << b->id() //
+		  << ", type: " << b->type()	 //
+		  << ", value: " << *b << '\n';
 
 	try {
-		std::cout << i1 << " != " << i2 << ' ' << std::boolalpha
-			  << (i1 != i2) << '\n';
-		delete i3;
+		std::cout << std::boolalpha;
+		std::cout << "a != b : " << (*a != *b) << '\n';
+		std::cout << "a >= b : " << (*a >= *b) << '\n';
+		std::cout << "a <= b : " << (*a <= *b) << '\n';
+		delete a;
+		delete b;
 		return 0;
 	} catch (Object::exceptions exc) {
 		switch (exc) {
 		case Object::exceptions::NOT_MATCHING_DERIVED:
 			std::cerr << "\n!!Error: NOT_MATCHING_DERIVED!!\n";
 		}
-		delete i3;
+		delete a;
+		delete b;
 		return -1;
 	}
 }

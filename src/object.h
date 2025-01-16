@@ -7,7 +7,7 @@
  * 	+2.Выгрузки объекта в текстовую строку в динамической памяти.
  * 	+3.Возврат уникального идентификатора класса.
  * 	+4.Возврат указателя на строку с именем класса.
- * 	?5.Сравнение двух объектов.
+ * 	+5.Сравнение двух объектов.
  * 	?6."Сложение" (Объединение) двух объектов.
  * 	+7.Создание динамической копии объекта.
  * Сделать разработанный класс производным от абстрактного базового класса
@@ -72,5 +72,32 @@ protected:
 
 private:
 	static inline int count_; // Счётчик объектов
-	int const id_; // Идентификатор класса
+	int const id_;		  // Идентификатор класса
+};
+
+class CObject : public Object {
+public:
+	/* Функция сравнения. Возврат 1 если this > other, -1 если this < other,
+	 * 0 при равенстве*/
+	virtual int compare(CObject const & other) const = 0;
+	
+	friend bool operator>(const CObject &a, const CObject &b)
+	{
+		return (a.compare(b) > 0) ? true : false;
+	}
+
+	friend bool operator<=(const CObject &a, const CObject &b)
+	{
+		return !(a > b);
+	}
+
+	friend bool operator<(const CObject &a, const CObject &b)
+	{
+		return (a.compare(b) < 0) ? true : false;
+	}
+
+	friend bool operator>=(const CObject &a, const CObject &b)
+	{
+		return !(a < b);
+	}
 };
